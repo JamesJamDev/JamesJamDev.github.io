@@ -62,6 +62,8 @@ export default function Projects() {
                     <a href="https://thunderstore.io/c/lethal-company/p/JellyJam/Tiny_Company/" target="_blank" rel="noopener noreferrer">
                         <img src={tinyCompanyLogo} className="jellyjam" alt="Tiny Company Mod Icon" style={{ width: '200px', height: '200px' }} />
                     </a>
+                    <h1>YouTube Showcase</h1>
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/4rmfBOBv6Ew?si=Qz1F9gfO64uYB5os" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', gap: '20px', flexWrap: 'wrap', width: '100%', marginTop: sectionGap }}>
