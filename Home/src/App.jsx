@@ -11,6 +11,7 @@ function App() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
         <JellyJamIcon />
+        <div style={{ margin: '200px 0' }}></div>
         <Projects />
     </div>
   );

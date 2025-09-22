@@ -1,5 +1,5 @@
 import React from 'react';
-import jellyJamLogo from './assets/jellyjam.png'; // Update the path to your image file
+import jellyJamLogo from './assets/jellyjam.png';
 
 const JellyJamIcon = () => {
     return (
