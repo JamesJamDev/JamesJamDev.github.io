@@ -31,14 +31,14 @@ export default function Projects() {
                 </div>
                 <div style={{ flex: 1, textAlign: 'center', maxWidth: '40%', position: 'relative' }}>
                     <button 
-                        style={{ position: 'absolute', left: '-50px', top: '50%', transform: 'translateY(-50%)', zIndex: 1 }}
+                        style={{ position: 'absolute', left: "0%", top: '50%', transform: 'translateY(-50%)', zIndex: 1 }}
                         onClick={handlePreviousImage}
                     >
                         &#8592;
                     </button>
                     <img src={boxceptionImages[currentImageIndex]} className="jellyjam" alt="Boxception Logo" style={{ width: '400px', height: '200px', borderRadius: '15px' }} />
                     <button 
-                        style={{ position: 'absolute', right: '-50px', top: '50%', transform: 'translateY(-50%)', zIndex: 1 }}
+                        style={{ position: 'absolute', right: "0%", top: '50%', transform: 'translateY(-50%)', zIndex: 1 }}
                         onClick={handleNextImage}
                     >
                         &#8594;
