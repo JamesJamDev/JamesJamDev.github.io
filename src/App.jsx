@@ -5,14 +5,20 @@ import Header from './header';
 import Home from './home';
 import Projects from './projects';
 import Contact from './contact';
+import { useAnimateOnScroll, useNavigation } from './hooks/useIntersectionObserver';
 
 function App() {
   const [state, SetState] = useState(1);
 
+  // Intersection Observer refs for animations
+  const [homeRef, homeVisible] = useAnimateOnScroll(0.2, '100px');
+  const [projectsRef, projectsVisible] = useAnimateOnScroll(0.1, '50px');
+  const [contactRef, contactVisible] = useAnimateOnScroll(0.3, '50px');
+
   useEffect(() => {
     const handleScroll = () => {
       const sections = ['home', 'projects', 'contact'];
-      const scrollPosition = window.scrollY + 150; // Offset for header height
+      const scrollPosition = window.scrollY + 100; // Offset for header height
 
       for (const sectionId of sections) {
         const section = document.getElementById(sectionId);
@@ -54,26 +60,50 @@ function App() {
       
       {/* Buffer area to prevent header from blocking content */}
       <div style={{ 
-        height: '100px', 
+        height: '60px', 
         width: '100%',
         backgroundColor: 'transparent',
         borderTop: '1px solid #444'
       }}></div>
       
       {/* Home Section */}
-      <section id="home" style={{ 
-        minHeight: '100vh', 
-        padding: '2rem',
-        scrollMarginTop: '100px' // Offset for fixed header
-      }}>
+      <section 
+        id="home" 
+        ref={homeRef}
+        style={{ 
+          padding: '1rem',
+          scrollMarginTop: '60px', // Offset for fixed header
+          opacity: homeVisible ? 1 : 0,
+          transform: homeVisible ? 'translateY(0)' : 'translateY(50px)',
+          transition: 'all 1s ease-out'
+        }}
+      >
         <Home />
       </section>
       
       {/* Projects Section */}
-      <Projects />
+      <div 
+        ref={projectsRef}
+        style={{
+          opacity: projectsVisible ? 1 : 0,
+          transform: projectsVisible ? 'translateY(0)' : 'translateY(40px)',
+          transition: 'all 1s ease-out 0.2s'
+        }}
+      >
+        <Projects />
+      </div>
       
       {/* Contact Section */}
-      <Contact />
+      <div 
+        ref={contactRef}
+        style={{
+          opacity: contactVisible ? 1 : 0,
+          transform: contactVisible ? 'translateY(0)' : 'translateY(30px)',
+          transition: 'all 1s ease-out 0.4s'
+        }}
+      >
+        <Contact />
+      </div>
     </div>
   );
 }

@@ -1,8 +1,14 @@
 import React from 'react';
 import jamesPhoto from './assets/jamesPhoto.JPG';
 import ImageWithTooltip from './components/ImageWithTooltip';
+import { useAnimateOnScroll } from './hooks/useIntersectionObserver';
 
 const Home = () => {
+    // Animation hooks for different elements
+    const [imagesRef, imagesVisible] = useAnimateOnScroll(0.3, '50px');
+    const [textRef, textVisible] = useAnimateOnScroll(0.3, '30px');
+    const [linksRef, linksVisible] = useAnimateOnScroll(0.3, '20px');
+
     return (
         <section style={{
             display: 'flex',
@@ -12,7 +18,16 @@ const Home = () => {
             padding: '2rem',
             minHeight: '300px'
         }}>
-            <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+            <div 
+                ref={imagesRef}
+                style={{ 
+                    textAlign: 'center', 
+                    marginBottom: '1.5rem',
+                    opacity: imagesVisible ? 1 : 0,
+                    transform: imagesVisible ? 'translateY(0)' : 'translateY(30px)',
+                    transition: 'all 0.8s ease-out'
+                }}
+            >
                 <ImageWithTooltip
                     src={jamesPhoto}
                     alt="James (me) sitting in a chair playing an ocarina"
@@ -41,12 +56,30 @@ const Home = () => {
                     tooltipPosition="bottom"
                 />
             </div>
-            <div style={{ textAlign: 'center' }}>
+            <div 
+                ref={textRef}
+                style={{ 
+                    textAlign: 'center',
+                    opacity: textVisible ? 1 : 0,
+                    transform: textVisible ? 'translateY(0)' : 'translateY(20px)',
+                    transition: 'all 0.8s ease-out 0.2s'
+                }}
+            >
                 <h1>About Me</h1>
                 <p style={{ marginTop: '1rem', fontSize: '1.2rem' }}>
                     Hi, I'm James. I am a game developer who creates videos on the process of making games and share them for everyone
                     to play.
                 </p>
+            </div>
+            <div 
+                ref={linksRef}
+                style={{
+                    opacity: linksVisible ? 1 : 0,
+                    transform: linksVisible ? 'translateY(0)' : 'translateY(15px)',
+                    transition: 'all 0.8s ease-out 0.4s'
+                }}
+            >
+                Links: <a href="https://github.com/JamesJamDev" target="_blank" rel="noopener noreferrer">GitHub</a>, <a href="https://twitter.com/JamesJamDev" target="_blank" rel="noopener noreferrer">Twitter</a>
             </div>
         </section>
     );

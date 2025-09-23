@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import './ProjectCounter.css';
+import { useAnimateOnScroll } from '../hooks/useIntersectionObserver';
 
 /**
  * ProjectCounter component fetches and displays live statistics from various APIs
@@ -19,34 +20,10 @@ const ProjectCounter = ({ apiUrl, title, defaultValue = 0, formatNumber = true }
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [hasAnimated, setHasAnimated] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
   const [finalValue, setFinalValue] = useState(defaultValue);
-  const counterRef = useRef(null);
-
-  // Intersection Observer to detect when counter enters viewport
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated) {
-          setIsVisible(true);
-        }
-      },
-      {
-        threshold: 0.5, // Trigger when 50% of the counter is visible
-        rootMargin: '20px'
-      }
-    );
-
-    if (counterRef.current) {
-      observer.observe(counterRef.current);
-    }
-
-    return () => {
-      if (counterRef.current) {
-        observer.unobserve(counterRef.current);
-      }
-    };
-  }, [hasAnimated]);
+  
+  // Use the custom intersection observer hook
+  const [counterRef, isVisible] = useAnimateOnScroll(0.5, '20px');
 
   // Animate counting from 0 to target value
   const animateCount = (targetValue) => {

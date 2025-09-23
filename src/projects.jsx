@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import './projects.css';
 import steamLogo from './assets/steamlogo.png';
 import youtubeLogo from './assets/youtubeLogo.png';
@@ -214,7 +215,7 @@ const Projects = () => {
       </div>
 
       {/* Modal */}
-      {selectedProject && (
+      {selectedProject && createPortal(
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <button className="modal-close" onClick={closeModal}>&times;</button>
@@ -308,7 +309,8 @@ const Projects = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </section>
   );
