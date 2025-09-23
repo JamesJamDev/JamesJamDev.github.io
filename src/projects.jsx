@@ -44,7 +44,7 @@ const Projects = () => {
       image: boxceptionImage,
       imagePosition: "center center",
       technologies: ["Godot", "Game Development", "Game Design"],
-      features: ["50+ unique levels", "Minimalist design", "Progressive difficulty", "Achievement system"],
+      features: ["Unique Box Mechanics", "Merge with specific objects to control them", "Puzzle Solving", "Immersive Story"],
       status: "In Development",
       releaseDate: "2026",
       platformText: "Wishlist On",
