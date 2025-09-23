@@ -57,12 +57,12 @@ const Projects = () => {
     },
     {
       title: "Tiny Company",
-      description: "A business simulation game where you manage resources and grow your company from the ground up.",
-      detailedDescription: "Build your business empire from a small startup to a thriving corporation. Manage resources, hire employees, research new technologies, and make strategic decisions that will determine your company's success.\n\nFeatures realistic business mechanics and engaging gameplay that teaches real-world business principles. Start with limited resources and work your way up to become a major industry player.",
+      description: "A mod that adds extra challenge to Lethal Company by making the players tiny, changing how they interact with the world and enemies.",
+      detailedDescription: "A mod for the game Lethal Company that shrinks the players down to a tiny size. This changes how players interact with the environment and enemies, making for a fresh and challenging experience. Players will need to adapt their strategies and use their new size to their advantage in order to survive and complete objectives.",
       image: tinyCompanyImage,
       imagePosition: "center top",
-      technologies: ["Unity", "C#", "UI/UX"],
-      features: ["Resource management", "Employee hiring system", "Technology research tree", "Multiple business sectors"],
+      technologies: ["Unity", "C#", "BepInEx"],
+      features: ["New Player Size", "Hoarding Bugs can carry the player", "Environmental Interaction Changes"],
       status: "Released",
       releaseDate: "2024",
       platformText: "Download On",
@@ -74,13 +74,13 @@ const Projects = () => {
       youtubeUrl: "https://youtu.be/4rmfBOBv6Ew"
     },
     {
-      title: "Game Development Content",
-      description: "Educational videos and tutorials showing the game development process from concept to completion.",
-      detailedDescription: "A comprehensive series of educational content covering all aspects of game development. From initial concept and design through programming, art creation, and final release.\n\nPerfect for aspiring game developers who want to learn the entire development pipeline through real-world examples. Each video breaks down complex concepts into easy-to-understand segments.",
+      title: "JellyJam Channel",
+      description: "From showcasing the intricacies of game development to sharing entertaining mod showcases and skits, the channel offers a variety of content for gamers and developers alike.",
+      detailedDescription: "The JellyJam channel has a heavy focus on game development and modding content. From showcasing the intricacies of game development to sharing entertaining mod showcases and occasionally skits, the channel is an outlet for me to share my passion for games and game development with a wider audience. Whether you're a fellow developer looking for insights or a gamer seeking fun and engaging content, there's something for everyone on the channel.",
       image: youtubeLogo,
       imagePosition: "center center",
-      technologies: ["Video Editing", "Teaching", "Game Dev"],
-      features: ["Step-by-step tutorials", "Real development examples", "Beginner-friendly", "Regular updates"],
+      technologies: ["Video Editing", "SEO Optimization", "Game Dev"],
+      features: ["Devlogs", "Mod Showcases", "Game Jams", "Skits"],
       status: "Ongoing",
       releaseDate: "2019-Present",
       platformText: "Watch On",
@@ -89,7 +89,7 @@ const Projects = () => {
         logo: youtubeLogo,
         link: "https://www.youtube.com/@JellyJamDev/"
       },
-      youtubeUrl: "" // Add your actual YouTube video URL here
+      youtubeUrl: "" 
     }
   ];
 

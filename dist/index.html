@@ -3,8 +3,23 @@
   <head>
     <title>JellyJam</title>
     <link rel="icon" href="/assets/jellyjam-6AXerP5b.png" type="image/png">
-    <script type="module" crossorigin src="/assets/index-sIS3d6Td.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-AJ_Txhri.css">
+    <style>
+      /* Prevent white flash on page load */
+      html, body {
+        background-color: #242424;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+      }
+      
+      /* Loading state to prevent flash */
+      #root {
+        min-height: 100vh;
+        background-color: #242424;
+      }
+    </style>
+    <script type="module" crossorigin src="/assets/index-ClJfu5kh.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BvDA6rF7.css">
   </head>
   <body>
     <div id="root"></div>

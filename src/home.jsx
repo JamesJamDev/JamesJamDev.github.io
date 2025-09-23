@@ -26,8 +26,9 @@ const Home = () => {
                     }}
                     tooltipPosition="bottom"
                 />
+                <span style={{ display: 'inline-block', width: '32px' }} />
                 <ImageWithTooltip
-                    src="https://yt3.googleusercontent.com/ytc/AIdro_mE-8_9X8nJhyZWGjw7qf7n0xHCz6vWo3_Qz7oJ=s176-c-k-c0x00ffffff-no-rj"
+                    src="https://yt3.ggpht.com/-hiy3v8iCfWR12SwU5alT1Mvt-ITQh1v3AXlz9IkxD3UG8AY0Dk3qacXSdp0ioCLmRFhKmgxiQ=s600-c-k-c0x00ffffff-no-rj-rp-mo"
                     alt="JellyJamDev YouTube profile picture"
                     style={{
                         width: '200px',
