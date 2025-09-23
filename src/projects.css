@@ -456,15 +456,6 @@
   font-size: 1.3rem;
 }
 
-.steam-widget-container {
-  border-radius: 8px;
-}
-
-.steam-widget-container iframe {
-  display: block;
-  border-radius: 8px;
-}
-
 .modal-tech {
   margin-bottom: 2rem;
 }

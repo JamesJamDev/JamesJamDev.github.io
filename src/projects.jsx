@@ -6,6 +6,15 @@ import boxceptionImage from './assets/boxception.jpg';
 import tinyCompanyImage from './assets/tinyCompany.png';
 import ProjectCounter from './components/ProjectCounter';
 
+/**
+ * Projects component displays a showcase of portfolio projects with interactive modals
+ * Features:
+ * - Grid layout of project cards with live API counters
+ * - Modal system for detailed project information
+ * - Steam widget integration for game projects
+ * - YouTube video embedding
+ * - Live data from multiple APIs (YouTube, Thunderstore)
+ */
 const Projects = () => {
   const [selectedProject, setSelectedProject] = useState(null);
 
