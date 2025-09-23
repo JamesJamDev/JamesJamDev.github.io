@@ -3,6 +3,21 @@
   <head>
     <title>JellyJam</title>
     <link rel="icon" href="./src/assets/jellyjam.png" type="image/png">
+    <style>
+      /* Prevent white flash on page load */
+      html, body {
+        background-color: #242424;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+      }
+      
+      /* Loading state to prevent flash */
+      #root {
+        min-height: 100vh;
+        background-color: #242424;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>

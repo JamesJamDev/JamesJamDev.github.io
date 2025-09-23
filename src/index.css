@@ -12,3 +12,29 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Ensure consistent background across all elements */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  /* Smooth scrolling for anchor links */
+  scroll-behavior: smooth;
+  margin: 0;
+  padding: 0;
+  background-color: #242424;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+#root {
+  min-height: 100vh;
+  background-color: #242424;
+  position: relative;
+}
