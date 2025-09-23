@@ -26,6 +26,19 @@ const Home = () => {
                     }}
                     tooltipPosition="bottom"
                 />
+                <ImageWithTooltip
+                    src="https://yt3.googleusercontent.com/ytc/AIdro_mE-8_9X8nJhyZWGjw7qf7n0xHCz6vWo3_Qz7oJ=s176-c-k-c0x00ffffff-no-rj"
+                    alt="JellyJamDev YouTube profile picture"
+                    style={{
+                        width: '200px',
+                        height: '200px',
+                        objectFit: 'cover',
+                        borderRadius: '50%',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                        objectPosition: 'center center'
+                    }}
+                    tooltipPosition="bottom"
+                />
             </div>
             <div style={{ textAlign: 'center' }}>
                 <h1>About Me</h1>

@@ -8,6 +8,14 @@ import tinyCompanyImage from './assets/tinyCompany.png';
 const Projects = () => {
   const [selectedProject, setSelectedProject] = useState(null);
 
+  // Helper function to extract YouTube video ID from URL
+  const getYouTubeVideoId = (url) => {
+    if (!url) return null;
+    const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+  };
+
   // Prevent background scrolling when modal is open
   useEffect(() => {
     if (selectedProject) {
@@ -44,7 +52,8 @@ const Projects = () => {
         name: "Steam",
         logo: steamLogo,
         link: "https://store.steampowered.com/app/1729280/Boxception/"
-      }
+      },
+      youtubeUrl: ""
     },
     {
       title: "Tiny Company",
@@ -61,7 +70,8 @@ const Projects = () => {
         name: "Thunderstore",
         logo: "https://thunderstore.io/favicon.ico",
         link: "https://thunderstore.io/c/lethal-company/p/JellyJam/Tiny_Company/"
-      }
+      },
+      youtubeUrl: "https://youtu.be/4rmfBOBv6Ew"
     },
     {
       title: "Game Development Content",
@@ -72,13 +82,14 @@ const Projects = () => {
       technologies: ["Video Editing", "Teaching", "Game Dev"],
       features: ["Step-by-step tutorials", "Real development examples", "Beginner-friendly", "Regular updates"],
       status: "Ongoing",
-      releaseDate: "2022-Present",
+      releaseDate: "2019-Present",
       platformText: "Watch On",
       platform: {
         name: "YouTube",
         logo: youtubeLogo,
-        link: "#"
-      }
+        link: "https://www.youtube.com/@JellyJamDev/"
+      },
+      youtubeUrl: "" // Add your actual YouTube video URL here
     }
   ];
 
@@ -109,7 +120,7 @@ const Projects = () => {
                 />
               </div>
               <div className="project-content">
-                <h3 className="project-title">{project.title}</h3>
+                <h3 className="project-title">{project.title} {project.releaseDate && `(${project.releaseDate})`}</h3>
                 <p className="project-description">{project.description}</p>
                 <div className="project-platform">
                   <span className="platform-tag tech-tag">
@@ -124,13 +135,14 @@ const Projects = () => {
                 </div>
                 <div
                   className="project-technologies"
-                  style={{ marginTop: '12px' }}
+                  style={{ marginTop: 'px', marginBottom: '8px' }}
                 >
                   {project.technologies.map((tech, techIndex) => (
                     <span key={techIndex} className="tech-tag">{tech}</span>
                   ))}
                 </div>
                 <div className="click-hint">Click for more details</div>
+                
               </div>
             </div>
           ))}
@@ -151,12 +163,25 @@ const Projects = () => {
                 style={{ objectPosition: selectedProject.imagePosition || 'center center' }}
               />
               <div className="modal-title-section">
-                <h2>{selectedProject.title}</h2>
+                <h2>{selectedProject.title} {selectedProject.releaseDate && `(${selectedProject.releaseDate})`}</h2>
                 <div className="modal-status">
                   <span className={`status-badge ${selectedProject.status.toLowerCase().replace(' ', '-')}`}>
                     {selectedProject.status}
                   </span>
-                  <span className="release-date">Released: {selectedProject.releaseDate}</span>
+                </div>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+                <div className="modal-platform">
+                  <h3>{selectedProject.platformText || "Available On"}</h3>
+                  <a 
+                    href={selectedProject.platform.link} 
+                    className="platform-link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img src={selectedProject.platform.logo} alt={selectedProject.platform.name} />
+                    <span>{selectedProject.platform.name}</span>
+                  </a>
                 </div>
               </div>
             </div>
@@ -164,18 +189,36 @@ const Projects = () => {
             <div className="modal-body">
               <div className="modal-description">
                 <h3>About</h3>
-                {selectedProject.detailedDescription.split('\\n').map((paragraph, index) => (
+                {selectedProject.detailedDescription.split('\n').map((paragraph, index) => (
                   <p key={index}>{paragraph}</p>
                 ))}
               </div>
 
-              <div className="modal-features">
-                <h3>Key Features</h3>
-                <ul>
-                  {selectedProject.features.map((feature, index) => (
-                    <li key={index}>{feature}</li>
-                  ))}
-                </ul>
+              <div className="modal-features-video-section">
+                <div className="modal-features">
+                  <h3>Key Features</h3>
+                  <ul>
+                    {selectedProject.features.map((feature, index) => (
+                      <li key={index}>{feature}</li>
+                    ))}
+                  </ul>
+                </div>
+                
+                {selectedProject.youtubeUrl && (
+                  <div className="modal-video">
+                    <h3>Video</h3>
+                    <div className="video-container-medium">
+                      <iframe
+                        src={`https://www.youtube.com/embed/${getYouTubeVideoId(selectedProject.youtubeUrl)}`}
+                        title="YouTube video player"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerPolicy="strict-origin-when-cross-origin"
+                        allowFullScreen
+                      ></iframe>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="modal-tech">
@@ -185,19 +228,6 @@ const Projects = () => {
                     <span key={index} className="tech-tag">{tech}</span>
                   ))}
                 </div>
-              </div>
-
-              <div className="modal-platform">
-                <h3>{selectedProject.platformText || "Available On"}</h3>
-                <a 
-                  href={selectedProject.platform.link} 
-                  className="platform-link"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <img src={selectedProject.platform.logo} alt={selectedProject.platform.name} />
-                  <span>{selectedProject.platform.name}</span>
-                </a>
               </div>
             </div>
           </div>
