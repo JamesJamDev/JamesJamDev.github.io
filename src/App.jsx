@@ -3,7 +3,7 @@ import './App.css'
 
 import Header from './header';
 import Home from './home';
-import About from './about';
+import Projects from './projects';
 import Contact from './contact';
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['home', 'about', 'contact'];
+      const sections = ['home', 'projects', 'contact'];
       const scrollPosition = window.scrollY + 150; // Offset for header height
 
       for (const sectionId of sections) {
@@ -69,8 +69,8 @@ function App() {
         <Home />
       </section>
       
-      {/* About Section */}
-      <About />
+      {/* Projects Section */}
+      <Projects />
       
       {/* Contact Section */}
       <Contact />
