@@ -55,11 +55,58 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
+.project-counters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0.5rem 0;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.project-wishlist-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem 0;
+  margin: 0.5rem 0;
+  min-height: 60px;
+}
+
+.wishlist-button {
+  background: linear-gradient(135deg, #66c0f4, #417a9b);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(102, 192, 244, 0.3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  line-height: 1;
+}
+
+.wishlist-button:hover {
+  background: linear-gradient(135deg, #417a9b, #2a4d66);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 192, 244, 0.4);
+}
+
+.project-bottom-section {
+  margin-top: auto; /* Push to bottom */
+}
+
 .click-hint {
   text-align: center;
   color: rgba(255, 255, 255, 0.6);
   font-size: 0.8rem;
-  margin-top: auto; /* Push to bottom */
   padding: 0.5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(0, 123, 255, 0.1);
@@ -93,6 +140,7 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1; /* Take remaining space */
+  justify-content: space-between; /* Distribute content evenly */
 }
 
 .project-title {
@@ -396,6 +444,25 @@
 .modal-features li {
   color: rgba(255, 255, 255, 0.87);
   margin-bottom: 0.5rem;
+}
+
+.modal-steam-widget {
+  margin-bottom: 2rem;
+}
+
+.modal-steam-widget h3 {
+  color: #fff;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+}
+
+.steam-widget-container {
+  border-radius: 8px;
+}
+
+.steam-widget-container iframe {
+  display: block;
+  border-radius: 8px;
 }
 
 .modal-tech {

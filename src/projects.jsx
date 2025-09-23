@@ -4,6 +4,7 @@ import steamLogo from './assets/steamlogo.png';
 import youtubeLogo from './assets/youtubeLogo.png';
 import boxceptionImage from './assets/boxception.jpg';
 import tinyCompanyImage from './assets/tinyCompany.png';
+import ProjectCounter from './components/ProjectCounter';
 
 const Projects = () => {
   const [selectedProject, setSelectedProject] = useState(null);
@@ -53,7 +54,9 @@ const Projects = () => {
         logo: steamLogo,
         link: "https://store.steampowered.com/app/1729280/Boxception/"
       },
-      youtubeUrl: ""
+      youtubeUrl: "",
+      steamEmbed: true,
+      steamAppId: "1729280"
     },
     {
       title: "Tiny Company",
@@ -71,7 +74,14 @@ const Projects = () => {
         logo: "https://thunderstore.io/favicon.ico",
         link: "https://thunderstore.io/c/lethal-company/p/JellyJam/Tiny_Company/"
       },
-      youtubeUrl: "https://youtu.be/4rmfBOBv6Ew"
+      youtubeUrl: "https://youtu.be/4rmfBOBv6Ew",
+      counters: [
+        {
+          title: "Downloads",
+          apiUrl: "https://api.allorigins.win/get?url=" + encodeURIComponent("https://thunderstore.io/api/experimental/package/JellyJam/Tiny_Company/"),
+          defaultValue: 0
+        }
+      ]
     },
     {
       title: "JellyJam Channel",
@@ -89,7 +99,19 @@ const Projects = () => {
         logo: youtubeLogo,
         link: "https://www.youtube.com/@JellyJamDev/"
       },
-      youtubeUrl: "" 
+      youtubeUrl: "",
+      counters: [
+        {
+          title: "Subscribers",
+          apiUrl: "https://api.allorigins.win/get?url=" + encodeURIComponent("https://www.googleapis.com/youtube/v3/channels?part=statistics&id=UCGTiQy1L8rsutN-COhaQizg&key=AIzaSyAgpxy0_kNbcvaoTFBmkhhBLASgrQwuuDg"),
+          defaultValue: 2630
+        },
+        {
+          title: "Views",
+          apiUrl: "https://api.allorigins.win/get?url=" + encodeURIComponent("https://www.googleapis.com/youtube/v3/channels?part=statistics&id=UCGTiQy1L8rsutN-COhaQizg&key=AIzaSyAgpxy0_kNbcvaoTFBmkhhBLASgrQwuuDg"),
+          defaultValue: 198267
+        }
+      ] 
     }
   ];
 
@@ -141,7 +163,40 @@ const Projects = () => {
                     <span key={techIndex} className="tech-tag">{tech}</span>
                   ))}
                 </div>
-                <div className="click-hint">Click for more details</div>
+                
+                <div className="project-bottom-section">
+                  {/* Project Counters - only show for projects without Steam embed */}
+                  {!project.steamEmbed && project.counters && project.counters.length > 0 && (
+                    <div className="project-counters">
+                      {project.counters.map((counter, counterIndex) => (
+                        <ProjectCounter
+                          key={counterIndex}
+                          apiUrl={counter.apiUrl}
+                          title={counter.title}
+                          defaultValue={counter.defaultValue}
+                          formatNumber={true}
+                        />
+                      ))}
+                    </div>
+                  )}
+                  
+                  {/* Steam wishlist button for Steam projects */}
+                  {project.steamEmbed && (
+                    <div className="project-wishlist-section">
+                      <a 
+                        href={project.platform.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="wishlist-button"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        + Add to Wishlist
+                      </a>
+                    </div>
+                  )}
+                  
+                  <div className="click-hint">Click for more details</div>
+                </div>
                 
               </div>
             </div>
@@ -220,6 +275,19 @@ const Projects = () => {
                   </div>
                 )}
               </div>
+
+              {selectedProject.steamEmbed && selectedProject.steamAppId && (
+                <div className="modal-steam-widget">
+                  <h3>Steam Store Page</h3>
+                  <iframe 
+                    src="https://store.steampowered.com/widget/1729280/" 
+                    frameBorder="0" 
+                    width="646" 
+                    height="190"
+                    style={{ width: '100%', maxWidth: '646px', height: '190px', border: 'none', borderRadius: '8px' }}
+                  ></iframe>
+                </div>
+              )}
 
               <div className="modal-tech">
                 <h3>Technologies Used</h3>
