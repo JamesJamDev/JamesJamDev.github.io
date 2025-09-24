@@ -60,7 +60,7 @@ function App() {
       
       {/* Buffer area to prevent header from blocking content */}
       <div style={{ 
-        height: '60px', 
+        height: '80px', 
         width: '100%',
         backgroundColor: 'transparent',
         borderTop: '1px solid #444'
@@ -71,8 +71,8 @@ function App() {
         id="home" 
         ref={homeRef}
         style={{ 
-          padding: '1rem',
-          scrollMarginTop: '60px', // Offset for fixed header
+          padding: '2rem 1rem 1rem 1rem',
+          scrollMarginTop: '80px', // Offset for fixed header
           opacity: homeVisible ? 1 : 0,
           transform: homeVisible ? 'translateY(0)' : 'translateY(50px)',
           transition: 'all 1s ease-out'

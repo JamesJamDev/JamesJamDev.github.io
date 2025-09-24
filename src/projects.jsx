@@ -102,7 +102,7 @@ const Projects = () => {
       technologies: ["Video Editing", "SEO Optimization", "Game Dev"],
       features: ["Devlogs", "Mod Showcases", "Game Jams", "Skits"],
       status: "Ongoing",
-      releaseDate: "2019-Present",
+      releaseDate: "Ongoing",
       platformText: "Watch On",
       platform: {
         name: "YouTube",
@@ -120,6 +120,11 @@ const Projects = () => {
           title: "Views",
           apiUrl: "https://api.allorigins.win/get?url=" + encodeURIComponent("https://www.googleapis.com/youtube/v3/channels?part=statistics&id=UCGTiQy1L8rsutN-COhaQizg&key=AIzaSyAgpxy0_kNbcvaoTFBmkhhBLASgrQwuuDg"),
           defaultValue: 198267
+        },
+        {
+          title: "Videos",
+          apiUrl: "https://api.allorigins.win/get?url=" + encodeURIComponent("https://www.googleapis.com/youtube/v3/channels?part=statistics&id=UCGTiQy1L8rsutN-COhaQizg&key=AIzaSyAgpxy0_kNbcvaoTFBmkhhBLASgrQwuuDg"),
+          defaultValue: 198
         }
       ] 
     }
@@ -133,6 +138,14 @@ const Projects = () => {
     setSelectedProject(null);
   };
 
+  // Function to get the appropriate tint class based on platform
+  const getTintClass = (project) => {
+    if (project.steamEmbed) return 'steam-tint';
+    if (project.platform.name === 'Thunderstore') return 'thunderstore-tint';
+    if (project.platform.name === 'YouTube') return 'youtube-tint';
+    return '';
+  };
+
   return (
     <section id="projects" className="projects-section">
       <div className="projects-container">
@@ -141,7 +154,7 @@ const Projects = () => {
           {projects.map((project, index) => (
             <div 
               key={index} 
-              className="project-card clickable"
+              className={`project-card clickable ${getTintClass(project)}`}
               onClick={() => openModal(project)}
             >
               <div className="project-image">
@@ -152,19 +165,15 @@ const Projects = () => {
                 />
               </div>
               <div className="project-content">
-                <h3 className="project-title">{project.title} {project.releaseDate && `(${project.releaseDate})`}</h3>
+                <h3 className="project-title">
+                  {project.title} {project.releaseDate && `(${project.releaseDate})`}
+                  <img
+                    src={project.platform.logo}
+                    alt={project.platform.name}
+                    className="title-platform-icon"
+                  />
+                </h3>
                 <p className="project-description">{project.description}</p>
-                <div className="project-platform">
-                  <span className="platform-tag tech-tag">
-                    <img
-                      src={project.platform.logo}
-                      alt={project.platform.name}
-                      className="platform-logo"
-                      style={{ width: 16, height: 16, verticalAlign: 'middle', marginRight: 4 }}
-                    />
-                    {project.platform.name} <span style={{ marginLeft: 4, fontSize: '0.85em', color: '#888' }}>(Platform)</span>
-                  </span>
-                </div>
                 <div
                   className="project-technologies"
                   style={{ marginTop: 'px', marginBottom: '8px' }}
@@ -201,6 +210,39 @@ const Projects = () => {
                         onClick={(e) => e.stopPropagation()}
                       >
                         + Add to Wishlist
+                        <img src={steamLogo} alt="Steam" className="wishlist-button-icon" />
+                      </a>
+                    </div>
+                  )}
+
+                  {/* Download mod button for Thunderstore projects */}
+                  {project.platform.name === "Thunderstore" && (
+                    <div className="project-wishlist-section">
+                      <a 
+                        href={project.platform.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="download-button"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        Download Mod
+                        <img src={project.platform.logo} alt="Thunderstore" className="download-button-icon" />
+                      </a>
+                    </div>
+                  )}
+
+                  {/* View channel button for YouTube projects */}
+                  {project.platform.name === "YouTube" && (
+                    <div className="project-wishlist-section">
+                      <a 
+                        href={project.platform.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="channel-button"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        View Channel
+                        <img src={youtubeLogo} alt="YouTube" className="channel-button-icon" />
                       </a>
                     </div>
                   )}

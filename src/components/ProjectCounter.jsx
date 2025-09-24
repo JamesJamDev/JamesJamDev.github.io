@@ -102,6 +102,8 @@ const ProjectCounter = ({ apiUrl, title, defaultValue = 0, formatNumber = true }
             countValue = parseInt(stats.subscriberCount) || defaultValue;
           } else if (title.toLowerCase().includes('view')) {
             countValue = parseInt(stats.viewCount) || defaultValue;
+          } else if (title.toLowerCase().includes('video')) {
+            countValue = parseInt(stats.videoCount) || defaultValue;
           }
         } else if (actualData.latest && actualData.latest.downloads) {
           // Thunderstore API format - downloads are in latest.downloads
