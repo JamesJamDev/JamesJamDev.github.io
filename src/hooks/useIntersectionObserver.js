@@ -67,13 +67,14 @@ export const useAnimateOnScroll = (threshold = 0.3, rootMargin = '50px') => {
 
 /**
  * Hook for sections that need to track visibility for navigation
- * @param {number} threshold - Visibility threshold (default: 0.5)
+ * @param {number} threshold - Visibility threshold (default: 0.3)
  * @returns {Array} [ref, isVisible]
  */
-export const useNavigation = (threshold = 0.5) => {
+export const useNavigation = (threshold = 0.3) => {
   const [ref, isIntersecting] = useIntersectionObserver({
     threshold,
-    rootMargin: '-20% 0px -20% 0px'
+    rootMargin: '-10% 0px -30% 0px', // More generous top margin, stricter bottom
+    triggerOnce: false // Allow continuous updates for navigation
   });
 
   return [ref, isIntersecting];
