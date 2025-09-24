@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.02, maximum-scale=2.0, user-scalable=yes" />
     <title>JellyJam</title>
     <link rel="icon" href="./src/assets/jellyjam.png" type="image/png">
     <style>
@@ -10,12 +12,19 @@
         margin: 0;
         padding: 0;
         overflow-x: hidden;
+        /* Mobile scrolling fixes */
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-y;
+        height: 100%;
+        position: relative;
       }
       
       /* Loading state to prevent flash */
       #root {
         min-height: 100vh;
         background-color: #242424;
+        position: relative;
+        -webkit-overflow-scrolling: touch;
       }
     </style>
   </head>

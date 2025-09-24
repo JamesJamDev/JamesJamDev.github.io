@@ -69,17 +69,61 @@ html {
   background-color: #242424;
   min-height: 100vh;
   overflow-x: hidden;
+  /* Fix for mobile scrolling issues */
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  /* Additional mobile Safari fixes */
+  -webkit-text-size-adjust: 100%;
+  position: relative;
 }
 
 body {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   color: rgba(255, 255, 255, 0.87);
+  /* Fix for mobile scrolling issues */
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  position: relative;
+  min-height: 100vh;
 }
 
 #root {
   min-height: 100vh;
   background-color: #242424;
   position: relative;
+}
+
+/* Mobile zoom enhancement */
+@media (max-width: 768px) {
+  html {
+    font-size: 14.6px !important; /* Minimal increase base font size on mobile */
+  }
+  
+  body {
+    font-size: 1.01rem !important;
+    line-height: 1.5 !important;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    transform: scale(1.01);
+    transform-origin: center;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 15.0px !important; /* Very minimal increase on small phones */
+  }
+  
+  body {
+    font-size: 1.02rem !important;
+    line-height: 1.55 !important;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    transform: scale(1.02);
+    transform-origin: center;
+  }
 }
 
 @theme inline {

@@ -39,7 +39,10 @@ function App() {
       minHeight: '100vh', 
       background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.05)), #242424',
       color: 'rgba(255, 255, 255, 0.87)',
-      position: 'relative'
+      position: 'relative',
+      /* Fix for mobile scrolling */
+      WebkitOverflowScrolling: 'touch',
+      touchAction: 'manipulation'
     }}>
       <Header />
       
@@ -59,8 +62,11 @@ function App() {
           padding: '2rem 1rem 1rem 1rem',
           scrollMarginTop: '80px', // Offset for fixed header
           opacity: homeVisible ? 1 : 0,
-          transform: homeVisible ? 'translateY(0)' : 'translateY(50px)',
-          transition: 'all 1s ease-out'
+          transform: homeVisible ? 'translate3d(0, 0, 0)' : 'translate3d(0, 50px, 0)',
+          transition: 'all 1s ease-out',
+          willChange: 'transform, opacity',
+          pointerEvents: 'auto',
+          touchAction: 'pan-y'
         }}
       >
         <Home />
@@ -74,8 +80,11 @@ function App() {
         }}
         style={{
           opacity: projectsVisible ? 1 : 0,
-          transform: projectsVisible ? 'translateY(0)' : 'translateY(40px)',
-          transition: 'all 1s ease-out 0.2s'
+          transform: projectsVisible ? 'translate3d(0, 0, 0)' : 'translate3d(0, 40px, 0)',
+          transition: 'all 1s ease-out 0.2s',
+          willChange: 'transform, opacity',
+          pointerEvents: 'auto',
+          touchAction: 'pan-y'
         }}
       >
         <Projects />
@@ -89,8 +98,11 @@ function App() {
         }}
         style={{
           opacity: contactVisible ? 1 : 0,
-          transform: contactVisible ? 'translateY(0)' : 'translateY(30px)',
-          transition: 'all 1s ease-out 0.3s'
+          transform: contactVisible ? 'translate3d(0, 0, 0)' : 'translate3d(0, 30px, 0)',
+          transition: 'all 1s ease-out 0.3s',
+          willChange: 'transform, opacity',
+          pointerEvents: 'auto',
+          touchAction: 'pan-y'
         }}
       >
         <Contact />
