@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import './projects.css';
-import steamLogo from './assets/steamlogo.png';
-import youtubeLogo from './assets/youtubeLogo.png';
-import boxceptionImage from './assets/boxception.jpg';
-import tinyCompanyImage from './assets/tinyCompany.png';
+import projects from './lib/projectsData';
 import ProjectCounter from './components/ProjectCounter';
 
 /**
@@ -46,89 +43,39 @@ const Projects = () => {
     }
   }, [selectedProject]);
 
-  const projects = [
-    {
+  // Projects data is now centralized in src/lib/projectsData.js
+  // Use the imported list and provide a quick toggle to show more items
+  const [showAllProjects, setShowAllProjects] = React.useState(false);
+  const INITIAL_VISIBLE = 6;
 
-      title: "Boxception",
-      description: "What would happen if boxes were used for more than just storage? What if they could float? Be controlled at a distance? Or even rewind through time?",
-      detailedDescription: "Boxception takes place in a futuristic setting where virtual worlds have became a real thing. You are one of the few lucky people to get selected to be a participant in the ongoing trials about a new fully immersive virtual world experience. The other participants get to go on great adventures to other worlds while you get stuck with... new boxes? Complete puzzles using these diverse boxes and slowly realize that maybe you were actually one of the lucky ones.",
-      image: boxceptionImage,
-      imagePosition: "center center",
-      technologies: ["Godot", "Game Development", "Game Design"],
-      features: ["Unique Box Mechanics", "Merge with specific objects to control them", "Puzzle Solving", "Immersive Story"],
-      status: "In Development",
-      releaseDate: "2026",
-      platformText: "Wishlist On",
-      platform: {
-        name: "Steam",
-        logo: steamLogo,
-        link: "https://store.steampowered.com/app/1729280/Boxception/"
-      },
-      youtubeUrl: "",
-      steamEmbed: true,
-      steamAppId: "1729280"
-    },
-    {
-      title: "Tiny Company",
-      description: "A mod that adds extra challenge to Lethal Company by making the players tiny, changing how they interact with the world and enemies.",
-      detailedDescription: "A mod for the game Lethal Company that shrinks the players down to a tiny size. This changes how players interact with the environment and enemies, making for a fresh and challenging experience. Players will need to adapt their strategies and use their new size to their advantage in order to survive and complete objectives.",
-      image: tinyCompanyImage,
-      imagePosition: "center top",
-      technologies: ["Unity", "C#", "BepInEx"],
-      features: ["New Player Size", "Hoarding Bugs can carry the player", "Environmental Interaction Changes"],
-      status: "Released",
-      releaseDate: "2024",
-      platformText: "Download On",
-      platform: {
-        name: "Thunderstore",
-        logo: "https://thunderstore.io/favicon.ico",
-        link: "https://thunderstore.io/c/lethal-company/p/JellyJam/Tiny_Company/"
-      },
-      youtubeUrl: "https://youtu.be/4rmfBOBv6Ew",
-      counters: [
-        {
-          title: "Downloads",
-          apiUrl: "https://api.allorigins.win/get?url=" + encodeURIComponent("https://thunderstore.io/api/experimental/package/JellyJam/Tiny_Company/"),
-          defaultValue: 0
-        }
-      ]
-    },
-    {
-      title: "JellyJam Channel",
-      description: "From showcasing the intricacies of game development to sharing entertaining mod showcases and skits, the channel offers a variety of content for gamers and developers alike.",
-      detailedDescription: "The JellyJam channel has a heavy focus on game development and modding content. From showcasing the intricacies of game development to sharing entertaining mod showcases and occasionally skits, the channel is an outlet for me to share my passion for games and game development with a wider audience. Whether you're a fellow developer looking for insights or a gamer seeking fun and engaging content, there's something for everyone on the channel.",
-      image: youtubeLogo,
-      imagePosition: "center center",
-      technologies: ["Video Editing", "SEO Optimization", "Game Dev"],
-      features: ["Devlogs", "Mod Showcases", "Game Jams", "Skits"],
-      status: "Ongoing",
-      releaseDate: "Ongoing",
-      platformText: "Watch On",
-      platform: {
-        name: "YouTube",
-        logo: youtubeLogo,
-        link: "https://www.youtube.com/@JellyJamDev/"
-      },
-      youtubeUrl: "",
-      counters: [
-        {
-          title: "Subscribers",
-          apiUrl: "https://api.allorigins.win/get?url=" + encodeURIComponent("https://www.googleapis.com/youtube/v3/channels?part=statistics&id=UCGTiQy1L8rsutN-COhaQizg&key=AIzaSyAgpxy0_kNbcvaoTFBmkhhBLASgrQwuuDg"),
-          defaultValue: 2630
-        },
-        {
-          title: "Views",
-          apiUrl: "https://api.allorigins.win/get?url=" + encodeURIComponent("https://www.googleapis.com/youtube/v3/channels?part=statistics&id=UCGTiQy1L8rsutN-COhaQizg&key=AIzaSyAgpxy0_kNbcvaoTFBmkhhBLASgrQwuuDg"),
-          defaultValue: 198267
-        },
-        {
-          title: "Videos",
-          apiUrl: "https://api.allorigins.win/get?url=" + encodeURIComponent("https://www.googleapis.com/youtube/v3/channels?part=statistics&id=UCGTiQy1L8rsutN-COhaQizg&key=AIzaSyAgpxy0_kNbcvaoTFBmkhhBLASgrQwuuDg"),
-          defaultValue: 198
-        }
-      ] 
-    }
-  ];
+  // Grouping and sorting: group by `type` and sort each group by releaseDate
+  const groupOrder = ['YouTube', 'Games', 'Mods', 'Other'];
+
+  const parseDateValue = (p) => {
+    if (!p.releaseDate) return 0;
+    if (String(p.releaseDate).toLowerCase() === 'ongoing') return Number.POSITIVE_INFINITY;
+    const n = parseInt(p.releaseDate, 10);
+    return Number.isFinite(n) ? n : 0;
+  };
+
+  const groupedSorted = groupOrder.reduce((acc, key) => {
+    acc[key] = [];
+    return acc;
+  }, {});
+
+  // Ensure projects with unknown/missing types go into 'Other'
+  projects.forEach((p) => {
+    const t = p.type && groupOrder.includes(p.type) ? p.type : 'Other';
+    groupedSorted[t].push(p);
+  });
+
+  // Sort each group: ongoing (Infinity) first, then newer years before older
+  Object.keys(groupedSorted).forEach((k) => {
+    groupedSorted[k].sort((a, b) => parseDateValue(b) - parseDateValue(a));
+  });
+
+  const flattened = groupOrder.flatMap((k) => groupedSorted[k]);
+  const visibleFlattened = showAllProjects ? flattened : flattened.slice(0, INITIAL_VISIBLE);
 
   const openModal = (project) => {
     setSelectedProject(project);
@@ -146,114 +93,181 @@ const Projects = () => {
     return '';
   };
 
+  // Ensure all project cards match the tallest card height
+  React.useEffect(() => {
+    let timeoutId = null;
+
+    const applyHeights = () => {
+      const nodeList = document.querySelectorAll('.projects-container .project-card');
+      const cards = Array.from(nodeList);
+      if (!cards.length) return;
+
+      // reset previously applied minHeight so measurements are accurate
+      cards.forEach((c) => (c.style.minHeight = ''));
+
+      // measure
+      const heights = cards.map((c) => Math.ceil(c.getBoundingClientRect().height));
+      const max = Math.max(...heights, 0);
+
+      // apply
+      cards.forEach((c) => (c.style.minHeight = `${max}px`));
+    };
+
+    // Recalculate when images load (they can change card height)
+    const imgs = Array.from(document.querySelectorAll('.projects-container .project-card img'));
+    const onImgLoad = () => {
+      // small debounce
+      if (timeoutId) clearTimeout(timeoutId);
+      timeoutId = setTimeout(applyHeights, 80);
+    };
+    imgs.forEach((img) => img.addEventListener('load', onImgLoad));
+
+    // initial apply + slight delay to catch late layout shifts
+    applyHeights();
+    const delayed = setTimeout(applyHeights, 250);
+
+    window.addEventListener('resize', applyHeights);
+
+    return () => {
+      clearTimeout(delayed);
+      if (timeoutId) clearTimeout(timeoutId);
+      window.removeEventListener('resize', applyHeights);
+      imgs.forEach((img) => img.removeEventListener('load', onImgLoad));
+    };
+  }, [showAllProjects]);
+
   return (
     <section id="projects" className="projects-section">
       <div className="projects-container">
         <h2 className="projects-title">Projects</h2>
-        <div className="projects-grid">
-          {projects.map((project, index) => (
-            <div 
-              key={index} 
-              className={`project-card clickable ${getTintClass(project)}`}
-              onClick={() => openModal(project)}
-            >
-              <div className="project-image">
-                <img 
-                  src={project.image} 
-                  alt={project.title}
-                  style={{ objectPosition: project.imagePosition || 'center center' }}
-                />
-              </div>
-              <div className="project-content">
-                <h3 className="project-title">
-                  {project.title} {project.releaseDate && `(${project.releaseDate})`}
-                  <img
-                    src={project.platform.logo}
-                    alt={project.platform.name}
-                    className="title-platform-icon"
-                  />
-                </h3>
-                <p className="project-description">{project.description}</p>
-                <div
-                  className="project-technologies"
-                  style={{ marginTop: 'px', marginBottom: '8px' }}
-                >
-                  {project.technologies.map((tech, techIndex) => (
-                    <span key={techIndex} className="tech-tag">{tech}</span>
+        <div>
+          {groupOrder.map((groupKey) => {
+            const items = groupedSorted[groupKey] || [];
+            // Determine which items should be shown (respect showAllProjects)
+            const itemsToRender = showAllProjects
+              ? items
+              : items.filter((p) => visibleFlattened.includes(p));
+
+            if (!itemsToRender || itemsToRender.length === 0) return null;
+
+            return (
+              <div key={groupKey} style={{ marginBottom: '2.25rem' }}>
+                <h3 style={{ color: '#fff', margin: '0 0 1rem 0' }}>{groupKey}</h3>
+                <div className="projects-grid">
+                  {itemsToRender.map((project, index) => (
+                    <div
+                      key={project.title + index}
+                      className={`project-card clickable ${getTintClass(project)}`}
+                      onClick={() => openModal(project)}
+                    >
+                      <div className="project-image">
+                        <img
+                          src={project.image}
+                          alt={project.title}
+                          style={{ objectPosition: project.imagePosition || 'center center' }}
+                        />
+                      </div>
+                      <div className="project-content">
+                        <div className="title-row">
+                          <h3 className="project-title">
+                            {project.title}
+                          </h3>
+                        </div>
+
+                        <div className="title-bubble">
+                          <span className="release-bubble">{project.releaseDate || project.status || ''}</span>
+                          {project.platform && (
+                            <img src={project.platform.logo} alt={project.platform.name} className="bubble-platform-icon" />
+                          )}
+                        </div>
+                        {/* Preview row replaces long description to keep cards short */}
+                        <div className="preview-row">
+                          <div className="preview-tags">
+                            {project.technologies && project.technologies.slice(0, 4).map((tech, techIndex) => (
+                              <span key={techIndex} className="tech-tag small">{tech}</span>
+                            ))}
+                          </div>
+
+                          <div className="preview-embed">
+                            {/* preview tags only now; platform actions moved to bottom */}
+                          </div>
+                        </div>
+
+                        <div className="project-bottom-section">
+                          {/* Full-width platform action placed at bottom of card */}
+                          {project.steamEmbed && project.platform && (
+                            <a
+                              href={project.platform.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="view-large wishlist-mini bottom-action"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              +Wishlist
+                            </a>
+                          )}
+
+                          {project.platform && project.platform.name === 'Thunderstore' && (
+                            <a
+                              href={project.platform.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="view-large download-mini bottom-action"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              View
+                            </a>
+                          )}
+
+                          {project.platform && project.platform.name === 'YouTube' && (
+                            <a
+                              href={project.platform.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="view-large channel-mini bottom-action"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              View
+                            </a>
+                          )}
+
+                          <div className="click-hint">Click for more details</div>
+                        </div>
+                      </div>
+                    </div>
                   ))}
                 </div>
-                
-                <div className="project-bottom-section">
-                  {/* Project Counters - only show for projects without Steam embed */}
-                  {!project.steamEmbed && project.counters && project.counters.length > 0 && (
-                    <div className="project-counters">
-                      {project.counters.map((counter, counterIndex) => (
-                        <ProjectCounter
-                          key={counterIndex}
-                          apiUrl={counter.apiUrl}
-                          title={counter.title}
-                          defaultValue={counter.defaultValue}
-                          formatNumber={true}
-                        />
-                      ))}
-                    </div>
-                  )}
-                  
-                  {/* Steam wishlist button for Steam projects */}
-                  {project.steamEmbed && (
-                    <div className="project-wishlist-section">
-                      <a 
-                        href={project.platform.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="wishlist-button"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        + Add to Wishlist
-                        <img src={steamLogo} alt="Steam" className="wishlist-button-icon" />
-                      </a>
-                    </div>
-                  )}
-
-                  {/* Download mod button for Thunderstore projects */}
-                  {project.platform.name === "Thunderstore" && (
-                    <div className="project-wishlist-section">
-                      <a 
-                        href={project.platform.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="download-button"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        Download Mod
-                        <img src={project.platform.logo} alt="Thunderstore" className="download-button-icon" />
-                      </a>
-                    </div>
-                  )}
-
-                  {/* View channel button for YouTube projects */}
-                  {project.platform.name === "YouTube" && (
-                    <div className="project-wishlist-section">
-                      <a 
-                        href={project.platform.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="channel-button"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        View Channel
-                        <img src={youtubeLogo} alt="YouTube" className="channel-button-icon" />
-                      </a>
-                    </div>
-                  )}
-                  
-                  <div className="click-hint">Click for more details</div>
-                </div>
-                
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
+
+        {projects.length > INITIAL_VISIBLE && (
+          <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+            <button
+              className="show-more-btn"
+              onClick={() => setShowAllProjects((s) => !s)}
+            >
+              {showAllProjects ? 'Show less' : `Show ${projects.length - INITIAL_VISIBLE} more`}
+            </button>
+          </div>
+        )}
+
+        {/* Patreon section */}
+        <div id="patreon" className="patreon-section">
+          <div className="patreon-container">
+            <h3 className="patreon-title">Support on Patreon</h3>
+            <p className="patreon-text">Become a patron to get extra perks and help support development.</p>
+            <ul className="patreon-perks">
+              <li>Early Access to Mods / Access to Exclusive Mods</li>
+              <li>Test My Games</li>
+              <li>Source Code of Specific Projects</li>
+              <li>Patreon Exclusive Role in My Discord Server (Includes Discord benefits)</li>
+            </ul>
+            <a className="patreon-button" href="https://www.patreon.com/cw/jellyjamdev" target="_blank" rel="noopener noreferrer">Visit Patreon</a>
+          </div>
+        </div>
+
       </div>
 
       {/* Modal */}

@@ -26,10 +26,25 @@
 
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  grid-template-rows: 1fr; /* Make all cards same height */
-  gap: 2rem;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
   margin-top: 2rem;
+  align-items: stretch;
+}
+
+/* Responsive columns: 2 columns on medium, 3 on wide */
+@media (min-width: 700px) {
+  .projects-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.75rem;
+  }
+}
+
+@media (min-width: 1100px) {
+  .projects-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
 }
 
 .project-card {
@@ -42,6 +57,8 @@
   display: flex;
   flex-direction: column;
   height: 100%; /* Take full height of grid cell */
+  min-height: 300px; /* Ensure consistent card sizing even when a group has a single card */
+  position: relative;
 }
 
 .project-card.clickable {
@@ -202,8 +219,27 @@
   object-fit: contain;
 }
 
+.show-more-btn {
+  background: linear-gradient(135deg, #2e2e2e, #444);
+  color: #fff;
+  padding: 0.6rem 1.1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.show-more-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
 .project-bottom-section {
   margin-top: auto; /* Push to bottom */
+  padding: 1rem 1rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .click-hint {
@@ -247,10 +283,45 @@
 }
 
 .project-title {
-  font-size: 1.4rem;
-  margin: 0 0 1rem 0;
+  font-size: 1.25rem;
+  margin: 0;
   color: #007bff;
   font-weight: 600;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 140px); /* leave room for platform icon */
+  text-align: center;
+}
+
+.title-bubble {
+  margin-top: 1rem;
+  margin-bottom: 1rem; /* extra spacing between bubble and tags */
+  display: flex;
+  justify-content: center; /* center the bubble under the title */
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.release-bubble {
+  display: inline-block;
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.95);
+  padding: 0.4rem 1rem; /* increased padding to make bubble larger */
+  border-radius: 999px;
+  font-size: 0.9rem; /* slightly larger font */
+  font-weight: 800;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* platform icon next to bubble */
+.bubble-platform-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
 }
 
 .project-description {
@@ -294,6 +365,44 @@
   vertical-align: middle;
 }
 
+/* Title row layout: title left, platform actions right */
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  position: relative; /* allow centering title absolutely while keeping platform icon in flow */
+}
+
+.platform-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.action-mini {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.6rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-decoration: none;
+  color: #fff;
+}
+
+.wishlist-mini {
+  background: linear-gradient(135deg, #66c0f4, #417a9b);
+}
+
+.view-mini {
+  background: linear-gradient(135deg, #00d4aa, #007a63);
+}
+
+.action-mini:hover {
+  transform: translateY(-2px);
+}
+
 .tech-tag {
   background: linear-gradient(135deg, #444, #555);
   color: white;
@@ -312,6 +421,162 @@
   background: linear-gradient(135deg, #555, #666);
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Small variant for preview tags */
+.tech-tag.small {
+  padding: 0.25rem 0.6rem;
+  font-size: 0.75rem;
+  border-radius: 6px;
+}
+
+.preview-row {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.preview-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  max-width: 100%;
+  justify-content: center;
+}
+
+.preview-embed {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Large view button for YouTube that fills available preview space */
+.view-large {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #ff0000, #cc0000);
+  color: white;
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  min-width: 140px;
+  width: 100%;
+  max-width: 100%;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+  box-sizing: border-box;
+}
+
+.view-large:hover {
+  transform: translateY(-2px);
+}
+
+/* Platform-specific color variants matching previous button colors */
+.view-large.wishlist-mini {
+  background: linear-gradient(135deg, #66c0f4, #417a9b);
+}
+
+.view-large.download-mini {
+  background: linear-gradient(135deg, #00d4aa, #007a63);
+}
+
+.view-large.channel-mini {
+  background: linear-gradient(135deg, #ff0000, #cc0000);
+}
+
+/* bottom-action spacing so click-hint sits below the button */
+.bottom-action {
+  margin-bottom: 0.5rem;
+}
+
+/* Small button variants used in preview */
+.wishlist-button.small,
+.download-button.small,
+.channel-button.small {
+  padding: 0.4rem 0.7rem;
+  height: 36px;
+  font-size: 0.85rem;
+  box-shadow: none;
+}
+
+/* Make ProjectCounter more compact when inside preview (override) */
+.project-counter {
+  --pc-padding: 0.15rem 0.5rem;
+}
+
+/* Patreon section styles */
+.patreon-section {
+  margin-top: 2rem;
+  background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.patreon-container {
+  max-width: 980px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.patreon-title {
+  color: #ff5a5a;
+  font-size: 1.6rem;
+  margin: 0 0 0.5rem 0;
+}
+
+.patreon-text {
+  color: rgba(255,255,255,0.9);
+  margin: 0 0 0.75rem 0;
+}
+
+.patreon-perks {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem 0;
+  display: inline-block;
+  text-align: left;
+}
+
+.patreon-perks li {
+  margin: 0.35rem 0;
+  padding-left: 1.25rem;
+  position: relative;
+}
+
+.patreon-perks li:before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #ff9b9b;
+}
+
+.patreon-button {
+  display: block;
+  background: linear-gradient(135deg, #ff5a5a, #d94a4a);
+  color: white;
+  padding: 0.9rem 1.25rem;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 1.05rem;
+  width: 220px;
+  margin: 1rem auto 0;
+  box-shadow: 0 10px 24px rgba(217,74,74,0.2);
+}
+
+.patreon-button:hover {
+  transform: translateY(-2px);
+}
+
+.projects-container .project-counter {
+  font-size: 0.9rem;
 }
 
 /* Responsive design */
@@ -333,6 +598,7 @@
   .project-card {
     margin: 0 auto;
     max-width: 400px;
+    min-height: 260px;
   }
   
   .project-content {
@@ -364,6 +630,7 @@
   
   .project-card {
     max-width: 350px;
+    min-height: 220px;
   }
   
   .project-content {
