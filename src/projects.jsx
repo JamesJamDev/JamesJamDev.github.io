@@ -76,6 +76,90 @@ const Projects = () => {
 
   const flattened = groupOrder.flatMap((k) => groupedSorted[k]);
   const visibleFlattened = showAllProjects ? flattened : flattened.slice(0, INITIAL_VISIBLE);
+  // Global sorting by date for the horizontal carousel
+  const byDate = [...flattened].sort((a, b) => parseDateValue(b) - parseDateValue(a));
+
+  // Exclude certain items from the spotlight/thumbnail preview
+  const excludedTitles = new Set(['Devlog Series', 'Open Source Utility']);
+  const filteredByDate = byDate.filter((p) => !excludedTitles.has(p.title));
+
+  // Spotlight focus state for Focus+Thumbnails view (use filtered list)
+  const [focusedProject, setFocusedProject] = React.useState(filteredByDate[0] || null);
+  React.useEffect(() => {
+    if ((!focusedProject || !filteredByDate.includes(focusedProject)) && filteredByDate.length) {
+      setFocusedProject(filteredByDate[0]);
+    }
+  }, [filteredByDate]);
+
+  // Ref to the thumbnail rail to auto-scroll the selected thumbnail into view
+  const thumbRailRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (!focusedProject) return;
+    const rail = thumbRailRef.current;
+    if (!rail) return;
+    const sel = rail.querySelector('.thumbnail-item.selected');
+    if (sel && sel.scrollIntoView) {
+      // center selected thumbnail in rail when changed
+      sel.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+  }, [focusedProject]);
+
+  // Try to sample a dominant-ish color from the focused project's image
+  const [bubbleBg, setBubbleBg] = React.useState(null);
+  const [bubbleBorder, setBubbleBorder] = React.useState(null);
+
+  React.useEffect(() => {
+    setBubbleBg(null);
+    setBubbleBorder(null);
+    if (!focusedProject || !focusedProject.image) return;
+
+    let mounted = true;
+    const img = new Image();
+    img.crossOrigin = 'Anonymous';
+    img.src = focusedProject.image;
+
+    const applyFallback = () => {
+      if (!mounted) return;
+      setBubbleBg('rgba(255,255,255,0.06)');
+      setBubbleBorder('rgba(255,255,255,0.08)');
+    };
+
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        const w = Math.min(40, img.naturalWidth || 40);
+        const h = Math.min(40, img.naturalHeight || 40);
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          applyFallback();
+          return;
+        }
+        // draw centered crop
+        ctx.drawImage(img, 0, 0, w, h);
+        const data = ctx.getImageData(Math.floor(w / 2), Math.floor(h / 2), 1, 1).data;
+        const [r, g, b, a] = data;
+        if (typeof r === 'number') {
+          const bg = `rgba(${r}, ${g}, ${b}, 0.10)`;
+          const border = `rgba(${Math.min(255, r + 10)}, ${Math.min(255, g + 10)}, ${Math.min(255, b + 10)}, 0.12)`;
+          if (mounted) {
+            setBubbleBg(bg);
+            setBubbleBorder(border);
+          }
+        } else {
+          applyFallback();
+        }
+      } catch (e) {
+        applyFallback();
+      }
+    };
+
+    img.onerror = () => applyFallback();
+
+    return () => { mounted = false; };
+  }, [focusedProject]);
 
   const openModal = (project) => {
     setSelectedProject(project);
@@ -98,7 +182,8 @@ const Projects = () => {
     let timeoutId = null;
 
     const applyHeights = () => {
-      const nodeList = document.querySelectorAll('.projects-container .project-card');
+      // Only measure cards inside the grid (exclude carousel items)
+      const nodeList = document.querySelectorAll('.projects-container .projects-grid .project-card');
       const cards = Array.from(nodeList);
       if (!cards.length) return;
 
@@ -136,122 +221,73 @@ const Projects = () => {
     };
   }, [showAllProjects]);
 
+
   return (
     <section id="projects" className="projects-section">
       <div className="projects-container">
         <h2 className="projects-title">Projects</h2>
-        <div>
-          {groupOrder.map((groupKey) => {
-            const items = groupedSorted[groupKey] || [];
-            // Determine which items should be shown (respect showAllProjects)
-            const itemsToRender = showAllProjects
-              ? items
-              : items.filter((p) => visibleFlattened.includes(p));
 
-            if (!itemsToRender || itemsToRender.length === 0) return null;
+        {/* Spotlight + Thumbnails (focus rail) */}
+        <div className="spotlight-area">
+          {focusedProject && (
+            <div className="spotlight">
+              <div className="spotlight-image">
+                <img src={focusedProject.image} alt={focusedProject.title} style={{ objectPosition: focusedProject.imagePosition || 'center center' }} />
+              </div>
+              <div className="spotlight-content">
+                <div className="spotlight-title-row">
+                  <h3 className="spotlight-title">{focusedProject.title}</h3>
+                </div>
 
-            return (
-              <div key={groupKey} style={{ marginBottom: '2.25rem' }}>
-                <h3 style={{ color: '#fff', margin: '0 0 1rem 0' }}>{groupKey}</h3>
-                <div className="projects-grid">
-                  {itemsToRender.map((project, index) => (
-                    <div
-                      key={project.title + index}
-                      className={`project-card clickable ${getTintClass(project)}`}
-                      onClick={() => openModal(project)}
-                    >
-                      <div className="project-image">
-                        <img
-                          src={project.image}
-                          alt={project.title}
-                          style={{ objectPosition: project.imagePosition || 'center center' }}
-                        />
-                      </div>
-                      <div className="project-content">
-                        <div className="title-row">
-                          <h3 className="project-title">
-                            {project.title}
-                          </h3>
-                        </div>
+                <div className="platform-and-bubble">
+                  {focusedProject.platform && (
+                    <img src={focusedProject.platform.logo} alt={focusedProject.platform.name} className="spotlight-platform-icon" />
+                  )}
+                  <div className="title-bubble">
+                    <span
+                      className="release-bubble"
+                      style={{ background: bubbleBg || undefined, borderColor: bubbleBorder || undefined }}
+                    >{focusedProject.releaseDate || focusedProject.status || ''}</span>
+                  </div>
+                </div>
 
-                        <div className="title-bubble">
-                          <span className="release-bubble">{project.releaseDate || project.status || ''}</span>
-                          {project.platform && (
-                            <img src={project.platform.logo} alt={project.platform.name} className="bubble-platform-icon" />
-                          )}
-                        </div>
-                        {/* Preview row replaces long description to keep cards short */}
-                        <div className="preview-row">
-                          <div className="preview-tags">
-                            {project.technologies && project.technologies.slice(0, 4).map((tech, techIndex) => (
-                              <span key={techIndex} className="tech-tag small">{tech}</span>
-                            ))}
-                          </div>
-
-                          <div className="preview-embed">
-                            {/* preview tags only now; platform actions moved to bottom */}
-                          </div>
-                        </div>
-
-                        <div className="project-bottom-section">
-                          {/* Full-width platform action placed at bottom of card */}
-                          {project.steamEmbed && project.platform && (
-                            <a
-                              href={project.platform.link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="view-large wishlist-mini bottom-action"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              +Wishlist
-                            </a>
-                          )}
-
-                          {project.platform && project.platform.name === 'Thunderstore' && (
-                            <a
-                              href={project.platform.link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="view-large download-mini bottom-action"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              View
-                            </a>
-                          )}
-
-                          {project.platform && project.platform.name === 'YouTube' && (
-                            <a
-                              href={project.platform.link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="view-large channel-mini bottom-action"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              View
-                            </a>
-                          )}
-
-                          <div className="click-hint">Click for more details</div>
-                        </div>
-                      </div>
-                    </div>
+                <div className="spotlight-tags">
+                  {focusedProject.technologies && focusedProject.technologies.slice(0, 6).map((tech, i) => (
+                    <span key={i} className="tech-tag small">{tech}</span>
                   ))}
                 </div>
-              </div>
-            );
-          })}
-        </div>
 
-        {projects.length > INITIAL_VISIBLE && (
-          <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-            <button
-              className="show-more-btn"
-              onClick={() => setShowAllProjects((s) => !s)}
-            >
-              {showAllProjects ? 'Show less' : `Show ${projects.length - INITIAL_VISIBLE} more`}
-            </button>
+                <p className="spotlight-sub">{(focusedProject.detailedDescription || '').split('\n')[0]}</p>
+
+                <div className="spotlight-actions">
+                  {focusedProject.platform && (
+                    <a href={focusedProject.platform.link} target="_blank" rel="noopener noreferrer" className={`view-large ${focusedProject.platform.name === 'YouTube' ? 'channel-mini' : (focusedProject.platform.name === 'Thunderstore' ? 'download-mini' : 'wishlist-mini')}`} onClick={(e) => e.stopPropagation()}>
+                      View
+                    </a>
+                  )}
+                  <button className="show-details" onClick={() => openModal(focusedProject)}>Details</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div ref={thumbRailRef} className="thumbnail-rail" role="list" aria-label="Project thumbnails">
+            {filteredByDate.map((project, idx) => (
+              <button
+                key={project.title + idx}
+                className={`thumbnail-item ${focusedProject === project ? 'selected' : ''}`}
+                onClick={() => setFocusedProject(project)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setFocusedProject(project); } }}
+                aria-pressed={focusedProject === project}
+                role="listitem"
+              >
+                <img src={project.image} alt={project.title} style={{ objectPosition: project.imagePosition || 'center center' }} />
+                <div className="thumb-title">{project.title}</div>
+              </button>
+            ))}
           </div>
-        )}
+        </div> {/* end .spotlight-area */}
+        {/* grid/cards removed per request; preview is spotlight + thumbnails only */}
 
         {/* Patreon section */}
         <div id="patreon" className="patreon-section">
